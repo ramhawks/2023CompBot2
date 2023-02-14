@@ -17,7 +17,10 @@ private static final CANSparkMax arm     = new CANSparkMax(ArmSubSystemConstants
 private static final CANSparkMax extendo = new CANSparkMax(ArmSubSystemConstants.EXTEND_CAN_ID, MotorType.kBrushless);
 
   /** Creates a new ArmSubSystem. */
-  public ArmSubSystem() {}
+  public ArmSubSystem() {
+
+    
+  }
 
   @Override
   public void periodic() {

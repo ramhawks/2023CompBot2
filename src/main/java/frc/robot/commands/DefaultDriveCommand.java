@@ -36,7 +36,7 @@ public class DefaultDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    DriveTrainSubSystem.GTA_Drive(leftPower.getAsDouble(), rightPower.getAsDouble(), -turn.getAsDouble() * .5);   
+    DriveTrainSubSystem.GTA_Drive(leftPower.getAsDouble(), rightPower.getAsDouble(), -turn.getAsDouble());   
   }
 
   // Called once the command ends or is interrupted.

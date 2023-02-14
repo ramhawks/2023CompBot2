@@ -28,9 +28,11 @@ public final class Constants {
     public static final double WHEEL_CPR                  =GEAR_BOX_RATIO * MOTOR_ENCODER_CPR;
     public static final double DRIVE_CPI                  =WHEEL_CPR / DRIVE_WHEEL_CIRC; 
     
-    public static final double SLOW_DRIVE_SCALAR          =.1; 
+    public static final double SLOW_DRIVE_SCALAR          =.25; 
 
     public static final double OPEN_LOOP_RAMP_RATE        =1;
+
+    public static final double TURN_SPEED_SCALER          =4;
   }
 
 public static class ArmSubSystemConstants {
