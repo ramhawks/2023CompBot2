@@ -10,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants.DriveTrainConstants;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveTrainSubSystem extends SubsystemBase {
@@ -21,6 +22,7 @@ private static final CANSparkMax rightPrimary   = new CANSparkMax(DriveTrainCons
 private static final CANSparkMax rightSecondary = new CANSparkMax(DriveTrainConstants.RIGHT_DRIVE_SECONDARY_CAN_ID, MotorType.kBrushless);
 private static  RelativeEncoder leftEncoder;
 private static RelativeEncoder  rightEncoder;
+private static DifferentialDrive diffDrive = new DifferentialDrive(rightPrimary, leftPrimary);
 
   public DriveTrainSubSystem() {
     leftPrimary.restoreFactoryDefaults();   leftSecondary.restoreFactoryDefaults();
@@ -67,6 +69,12 @@ private static RelativeEncoder  rightEncoder;
     setMotors(leftPowerMapped, -rightPowerMapped);
 
   }
+
+  public static void curvatureDrive(double power, double turn, Boolean spin) {
+    setNeutral();
+    diffDrive.curvatureDrive(power, turn, spin);
+  }
+
   public static void setMotors(double leftPower, double rightPower){
     leftPrimary.set(leftPower); rightPrimary.set(rightPower);
   }

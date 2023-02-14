@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.CurvatureDriveCommnad;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.SlowDrive;
 import frc.robot.commands.brakeCommand;
@@ -36,7 +37,13 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    driveTrain.setDefaultCommand(new DefaultDriveCommand(driveTrain,
+/*driveTrain.setDefaultCommand(new CurvatureDriveCommnad(driveTrain, 
+                                () -> m_driverController.getLeftTriggerAxis(), 
+                                () -> m_driverController.getRightTriggerAxis(),
+                                () -> m_driverController.getLeftX(), 
+                                () -> m_driverController.a().getAsBoolean()));
+*/
+driveTrain.setDefaultCommand(new DefaultDriveCommand(driveTrain,
     () -> m_driverController.getLeftTriggerAxis(), 
     () -> m_driverController.getRightTriggerAxis(), 
     () -> m_driverController.getLeftX()));

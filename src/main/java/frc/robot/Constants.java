@@ -33,6 +33,13 @@ public final class Constants {
     public static final double OPEN_LOOP_RAMP_RATE        =1;
   }
 
+public static class ArmSubSystemConstants {
+  public static final int ROTATE_CAN_ID                    =14;
+  public static final int TILT_CAN_ID                       =15;
+  public static final int EXTEND_CAN_ID                    =16;
+
+  }
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort         = 0;
   }
