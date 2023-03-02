@@ -5,14 +5,20 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.SlowDrive;
 import frc.robot.commands.brakeCommand;
+import frc.robot.commands.diffDriveCommand;
+import frc.robot.commands.grabCommand;
+import frc.robot.commands.homeCommand;
+import frc.robot.subsystems.ArmSubSystem;
 import frc.robot.subsystems.DriveTrainSubSystem;
 import frc.robot.subsystems.TelemetrySubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,9 +33,13 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_armController = 
+      new CommandXboxController(OperatorConstants.kArmControllerPort);
 
   private final DriveTrainSubSystem driveTrain = new DriveTrainSubSystem();
   //private final TelemetrySubsystem  telemetry  = new TelemetrySubsystem();
+
+  private final ArmSubSystem arm = new ArmSubSystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -41,11 +51,21 @@ public class RobotContainer {
                                 () -> m_driverController.getRightTriggerAxis(),
                                 () -> m_driverController.getLeftX(), 
                                 () -> m_driverController.a().getAsBoolean()));
-*/
+
 driveTrain.setDefaultCommand(new DefaultDriveCommand(driveTrain,
     () -> m_driverController.getLeftTriggerAxis(), 
     () -> m_driverController.getRightTriggerAxis(), 
     () -> m_driverController.getLeftX()));
+*/
+
+driveTrain.setDefaultCommand(new diffDriveCommand(driveTrain, () -> m_driverController.getLeftTriggerAxis(),
+                                                              () -> m_driverController.getRightTriggerAxis(), 
+                                                              () -> m_driverController.getLeftX()));
+
+arm.setDefaultCommand(new ArmCommand(arm, 
+                                () -> m_armController.getLeftX(),
+                                () -> m_armController.getLeftY(),
+                                () -> m_armController.getRightY()));                   
 
   }
 
@@ -72,6 +92,9 @@ driveTrain.setDefaultCommand(new DefaultDriveCommand(driveTrain,
     () -> m_driverController.getLeftTriggerAxis(), 
     () -> m_driverController.getRightTriggerAxis(), 
     () -> m_driverController.getLeftX()));
+
+    m_armController.b().whileTrue(new grabCommand(arm));
+    m_armController.start().whileTrue(new homeCommand(arm));
   }
 
   /**

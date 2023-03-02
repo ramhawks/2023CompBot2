@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   
-  private final TelemetrySubsystem  telemetry  = new TelemetrySubsystem();
+  //private final TelemetrySubsystem  telemetry  = new TemetrySubsystem();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    telemetry.execute();
+   // telemetry.execute();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

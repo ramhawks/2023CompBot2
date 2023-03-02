@@ -26,6 +26,8 @@ private static RelativeEncoder  rightEncoder;
 //private static DifferentialDrive diffDrive      = new DifferentialDrive(rightPrimary, leftPrimary);
 private static double Steering                  = 1.5;
 
+private static DifferentialDrive diffDrive = new DifferentialDrive(leftPrimary, rightPrimary);
+
   public DriveTrainSubSystem() {
     leftPrimary.restoreFactoryDefaults();   leftSecondary.restoreFactoryDefaults();
     rightPrimary.restoreFactoryDefaults();  rightSecondary.restoreFactoryDefaults();
@@ -83,6 +85,10 @@ SmartDashboard.putNumber("leftPow", leftPow);
     rightPowerMapped = mapDouble(rightPowerMapped, -2, 2, -DriveTrainConstants.SLOW_DRIVE_SCALAR, DriveTrainConstants.SLOW_DRIVE_SCALAR);
     setMotors(leftPowerMapped, -rightPowerMapped);
 
+  }
+
+  public static void setDiffDrive(double power, double turn){
+    diffDrive.arcadeDrive(power, turn);
   }
 
   public static void setMotors(double leftPower, double rightPower){

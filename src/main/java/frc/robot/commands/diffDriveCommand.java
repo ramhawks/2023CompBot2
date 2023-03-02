@@ -4,31 +4,29 @@
 
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrainSubSystem;
 
-public class CurvatureDriveCommnad extends CommandBase {
-  /** Creates a new CurvatureDriveCommnad. */
-  DoubleSupplier left;
-  DoubleSupplier right;
-  DoubleSupplier turn;
-  BooleanSupplier spin;
-  public CurvatureDriveCommnad(DriveTrainSubSystem driveTrain, 
-                              DoubleSupplier left, 
-                              DoubleSupplier right, 
-                              DoubleSupplier turn, 
-                              BooleanSupplier spin) {
+public class diffDriveCommand extends CommandBase {
+  /** Creates a new diffDriveCommand. */
+  static DoubleSupplier leftPower; 
+  static DoubleSupplier rightPower; 
+  static DoubleSupplier turn;
+  public diffDriveCommand(DriveTrainSubSystem driveTrain, 
+                              DoubleSupplier leftPower, 
+                              DoubleSupplier rightPower, 
+                              DoubleSupplier turn) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.left = left;
-    this.right = right;
-    this.turn = turn;
-    this.spin = spin;
 
+    //DefaultDriveCommand.driveTrain = driveTrain; 
+    diffDriveCommand.leftPower = leftPower;
+    diffDriveCommand.rightPower = rightPower;
+    diffDriveCommand.turn = turn;
+    
     addRequirements(driveTrain);
-  }
+                              }
 
   // Called when the command is initially scheduled.
   @Override
@@ -37,8 +35,8 @@ public class CurvatureDriveCommnad extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double power = left.getAsDouble() - right.getAsDouble();
-    DriveTrainSubSystem.curvatureDrive(-power, turn.getAsDouble(), spin.getAsBoolean());
+    double power = rightPower.getAsDouble() - leftPower.getAsDouble();
+    DriveTrainSubSystem.setDiffDrive(power, turn.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
