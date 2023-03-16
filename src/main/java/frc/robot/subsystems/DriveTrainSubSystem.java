@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import org.opencv.core.Mat.Atable;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants.DriveTrainConstants;
@@ -23,8 +26,12 @@ private static final CANSparkMax rightPrimary   = new CANSparkMax(DriveTrainCons
 private static final CANSparkMax rightSecondary = new CANSparkMax(DriveTrainConstants.RIGHT_DRIVE_SECONDARY_CAN_ID, MotorType.kBrushless);
 private static RelativeEncoder leftEncoder;
 private static RelativeEncoder  rightEncoder;
+private static SparkMaxPIDController leftPID;
+
 //private static DifferentialDrive diffDrive      = new DifferentialDrive(rightPrimary, leftPrimary);
 private static double Steering                  = 1.5;
+private static double leftError;
+private static double rightError;
 
 private static DifferentialDrive diffDrive = new DifferentialDrive(leftPrimary, rightPrimary);
 
@@ -45,9 +52,10 @@ private static DifferentialDrive diffDrive = new DifferentialDrive(leftPrimary, 
     leftEncoder = leftPrimary.getEncoder(); 
     rightEncoder = rightPrimary.getEncoder();
 
+    leftPID = leftPrimary.getPIDController();
+
     leftPrimary.burnFlash(); leftSecondary.burnFlash();
     rightPrimary.burnFlash(); rightSecondary.burnFlash();
-   SmartDashboard.putNumber("Steering", Steering);
   }
 
   public static void GTA_Drive(double leftPower, double rightPower, double turn) {
@@ -88,7 +96,8 @@ SmartDashboard.putNumber("leftPow", leftPow);
   }
 
   public static void setDiffDrive(double power, double turn){
-    diffDrive.arcadeDrive(power, turn);
+    setNeutral();
+    diffDrive.arcadeDrive(power, -turn);
   }
 
   public static void setMotors(double leftPower, double rightPower){
@@ -117,6 +126,22 @@ SmartDashboard.putNumber("leftPow", leftPow);
     public static double getLeftpos(){ return leftEncoder.getPosition();}
     public static double getRightpos(){ return rightEncoder.getPosition();}
 
+    public static void homeEncoders(){
+      leftEncoder.setPosition(0);
+      rightEncoder.setPosition(0);
+    }
+
+    public static void setLeftPosFT(double setpoint){
+      leftError = setpoint - getLeftposFT();
+      leftPrimary.set(leftError * DriveTrainConstants.LEFT_DRIVE_KP);
+    }
+
+    public static void setRightPosFT(double setpoint){
+      
+      rightError = setpoint - getRightposFT();
+      rightPrimary.set(rightError * DriveTrainConstants.RIGHT_DRIVE_KP);
+    }
+
     public static double getLeftposFT(){ 
     return ((leftEncoder.getPosition() / DriveTrainConstants.GEAR_BOX_RATIO) 
                 * DriveTrainConstants.DRIVE_WHEEL_CIRC) / 12;}
@@ -124,6 +149,8 @@ SmartDashboard.putNumber("leftPow", leftPow);
     public static double getRightposFT(){
       return ((rightEncoder.getPosition() / DriveTrainConstants.GEAR_BOX_RATIO)
                 * DriveTrainConstants.DRIVE_WHEEL_CIRC) / 12;}
+
+
 
   @Override
   public void periodic() {

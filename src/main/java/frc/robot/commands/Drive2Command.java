@@ -5,23 +5,21 @@
 package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubSystem;
+import frc.robot.subsystems.DriveTrainSubSystem;
 
-
-
-public class ArmCommand extends CommandBase {
-  /** Creates a new ArmCommand. */
-  private DoubleSupplier spin;
-  private DoubleSupplier tilt;
-  private DoubleSupplier extend;
-  public ArmCommand(ArmSubSystem arm, DoubleSupplier spin, DoubleSupplier tilt, DoubleSupplier extend) {
+public class Drive2Command extends CommandBase {
+  /** Creates a new Drive2Command. */
+  private static DoubleSupplier leftDistance;
+  private static DoubleSupplier rightDistance;
+  public Drive2Command(DriveTrainSubSystem driveTrain, 
+                          DoubleSupplier leftDistance, 
+                          DoubleSupplier rightDistance) {
+    Drive2Command.leftDistance = leftDistance;
+    Drive2Command.rightDistance = rightDistance;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(arm);
-    this.spin = spin;
-    this.tilt = tilt;
-    this.extend = extend;
-    
+    addRequirements(driveTrain);
   }
 
   // Called when the command is initially scheduled.
@@ -31,9 +29,10 @@ public class ArmCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ArmSubSystem.setSpin(spin.getAsDouble() * .5);
-    ArmSubSystem.setExtendo(extend.getAsDouble() * .5);
-    ArmSubSystem.setTilt(tilt.getAsDouble() * .25);
+      
+      DriveTrainSubSystem.setLeftPosFT(leftDistance.getAsDouble());
+      DriveTrainSubSystem.setRightPosFT(rightDistance.getAsDouble());
+  
   }
 
   // Called once the command ends or is interrupted.

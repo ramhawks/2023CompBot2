@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.io.Externalizable;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -36,6 +38,8 @@ private static double tiltError;
 private static double spinSetpoint;
 private static double spinError;
 
+private static double extendoSetpoint;
+private static double extendoError;
 
 
 private static Compressor compressor = new Compressor(1, PneumaticsModuleType.CTREPCM);                                                                    
@@ -61,8 +65,15 @@ private static boolean grabberIsOpen;
       tilt.setSmartCurrentLimit(ArmSubSystemConstants.TILT_CURRENT_LIMIT);
       extendo.setSmartCurrentLimit(ArmSubSystemConstants.EXTENDO_CURRENT_LIMIT);
 
-      //tilt.setSoftLimit(SoftLimitDirection.kForward, 0);
-      //tilt.setSoftLimit(SoftLimitDirection.kReverse, -25);
+      tilt.setSoftLimit(SoftLimitDirection.kForward, ArmSubSystemConstants.TILT_UPPER_LIMIT);
+      tilt.setSoftLimit(SoftLimitDirection.kReverse, ArmSubSystemConstants.TILT_LOWER_LIMIT);
+      tilt.enableSoftLimit(SoftLimitDirection.kForward, true);
+      tilt.enableSoftLimit(SoftLimitDirection.kReverse, true);
+
+      extendo.setSoftLimit(SoftLimitDirection.kForward, ArmSubSystemConstants.EXTENDO_UPPER_LIMIT);
+      extendo.setSoftLimit(SoftLimitDirection.kReverse, ArmSubSystemConstants.EXTENDO_LOWER_LIMIT);
+      extendo.enableSoftLimit(SoftLimitDirection.kForward, true);
+      extendo.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
       spin.burnFlash();
       tilt.burnFlash();
@@ -80,33 +91,33 @@ private static boolean grabberIsOpen;
       homeEncoders();
   }
 
+  /***********spin stuff***************************/
   public static void setSpin(double spinPower){
+    if( (spinPower < 0 && spinEncoder.getDistance() >= ArmSubSystemConstants.SPIN_UPPER_LIMIT)) {
+      spin.setOpenLoopRampRate(0);
+      spin.set(0);
+      return;
+    }
+    if( (spinPower > 0 && spinEncoder.getDistance() <= ArmSubSystemConstants.SPIN_LOWER_LIMIT)) {
+      spin.setOpenLoopRampRate(0);
+      spin.set(0);
+      return;
+    }
+    spin.setOpenLoopRampRate(ArmSubSystemConstants.SPIN_RAMP_RATE);
     spin.set(spinPower);
-
-    /*if( (spinPower > 0 && getSpinDegrees() >= ArmSubSystemConstants.TILT_UPPER_LIMIT) ||
-    (spinPower < 0 && getSpinDegrees() <= ArmSubSystemConstants.TILT_LOWER_LIMIT) ) return;
-    if(spinPower != 0){
-      spin.set(spinPower);
-      spinSetpoint = getSpinDegrees();
-    }else{
-      spinError = spinSetpoint - getSpinDegrees();
-      spin.set(spinError * ArmSubSystemConstants.SPIN_KP);
-    }*/
   }
 
   public static double getSpinDegrees(){
     return spinEncoder.getDistance() / ArmSubSystemConstants.TILT_COUNTS_PER_DEGREE;
   }
+  public static void setSpinSetpoint(double setpoint){
+    spinError = setpoint - getSpinDegrees();
+    spin.set(spinError * ArmSubSystemConstants.SPIN_KP);
+  }
+/*************End spin stuff***********************/
 
+/*************Tilt stuff***************************/
   public static void setTilt(double power){
-     //tilt.set(power);
-    
-    //if( (power > 0 && getTiltDegrees() >= ArmSubSystemConstants.TILT_UPPER_LIMIT)  ||
-      //(power < 0 && getTiltDegrees() <= ArmSubSystemConstants.TILT_LOWER_LIMIT) ) {
-        //setTiltSetpoint(tiltSetpoint);
-        //return;
-      //}
-
       if(power != 0){
         tilt.set(power);
         tiltSetpoint = getTiltDegrees();
@@ -115,34 +126,32 @@ private static boolean grabberIsOpen;
       }  
     }
 
-    public static void setTiltSetpoint(double setpoint){
-      tiltError = tiltSetpoint - getTiltDegrees();
+  public static void setTiltSetpoint(double setpoint){
+      tiltError = setpoint - getTiltDegrees();
       tilt.set(tiltError * ArmSubSystemConstants.TILT_KP);
     }
   
-    public static double getTiltDegrees(){
+  public static double getTiltDegrees(){
       return tiltEncoder.getPosition() / ArmSubSystemConstants.TILT_COUNTS_PER_DEGREE;
     }
+/************End tilt stuff**************************/
 
+/************Start extendo stuff*********************/
   public static void setExtendo(double power){
     extendo.set(power);
+  }
 
-    /*if( (power > 0 && getExtendoDistance() >= ArmSubSystemConstants.EXTENDO_UPPER_LIMIT)  ||
-    (power < 0 && getExtendoDistance() <= ArmSubSystemConstants.EXTENDO_LOWER_LIMIT) ) return;
-
-    if(power != 0){
-      tilt.set(power);
-      tiltSetpoint = getExtendoDistance();
-    }else{
-      tiltError = tiltSetpoint - getExtendoDistance();
-      tilt.set(tiltError * ArmSubSystemConstants.EXTENDO_KP);
-    }*/
+  public static void setExtendoSetpoint(double setpoint){
+    extendoError = setpoint - getExtendoDistance();
+    extendo.set(extendoError * ArmSubSystemConstants.EXTENDO_KP);
   }
 
   public static double getExtendoDistance(){
     return extendoEncoder.getPosition();
   }
+/************End extendo stuff***********************/
 
+/************Start grabber stuff*********************/
 public static void openGrabber() {
     tester2.set(false);
     tester.set(true);
@@ -156,21 +165,26 @@ public static void closeGrabber() {
 }
 
 public static boolean getGrabberOpen(){return grabberIsOpen;}
+/*************End grabber stuff**********************/
+
 public static void homeEncoders(){
   spinEncoder.reset();
   extendoEncoder.setPosition(0);
   tiltEncoder.setPosition(0);
 
-  tiltSetpoint = 0;
+  tiltSetpoint    = 0;
+  spinSetpoint    = 0;
+  extendoSetpoint = 0;
+  
 }
 
 
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("grabber", getGrabberOpen());
-    SmartDashboard.putNumber("tilt", getTiltDegrees());
-    SmartDashboard.putNumber("spin", getSpinDegrees());
-    SmartDashboard.putNumber("Extend", getExtendoDistance());
+    SmartDashboard.putNumber("tilt", tiltEncoder.getPosition());
+    SmartDashboard.putNumber("spin", spinEncoder.getDistance());
+    SmartDashboard.putNumber("Extend", extendoEncoder.getPosition());
 
     SmartDashboard.putNumber("tilt temp", tilt.getMotorTemperature());
     SmartDashboard.putNumber("extend temp", extendo.getMotorTemperature());

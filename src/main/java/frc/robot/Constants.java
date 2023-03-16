@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import javax.xml.transform.stax.StAXResult;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -30,7 +28,8 @@ public final class Constants {
     public static final double WHEEL_CPR                  =GEAR_BOX_RATIO * MOTOR_ENCODER_CPR;
     public static final double DRIVE_CPI                  =WHEEL_CPR / DRIVE_WHEEL_CIRC; 
     public static final double SLOW_DRIVE_SCALAR          =.3; 
-    
+    public static final double LEFT_DRIVE_KP              = .01;
+    public static final double RIGHT_DRIVE_KP             = .01;
 
     public static final double OPEN_LOOP_RAMP_RATE        =2;
     public static final double TURN_SPEED_SCALER          =4;
@@ -41,17 +40,19 @@ public static class ArmSubSystemConstants {
   public static final int ROTATE_CAN_ID                    =14;
   public static final int TILT_CAN_ID                      =15;
   public static final int EXTEND_CAN_ID                    =16;
-  public static final double SPIN_RAMP_RATE                =.5;
-  public static final double TILT_RAMP_RATE                =.5;
-  public static final double EXTENDO_RAMP_RATE             =.5;
+  public static final double SPIN_RAMP_RATE                =1;
+  public static final double TILT_RAMP_RATE                =1;
+  public static final double EXTENDO_RAMP_RATE             =1;
   public static final int SPIN_CURRENT_LIMIT               =15;
   public static final int EXTENDO_CURRENT_LIMIT            =27; 
   public static final int TILT_CURRENT_LIMIT               =30;
-  public static final int EXTENDO_UPPER_LIMIT              =10;
-  public static final int EXTENDO_LOWER_LIMIT               =0;
-  public static final double EXTENDO_KP                     =.01;
-  public static final double TILT_UPPER_LIMIT              =130;
-  public static final double TILT_LOWER_LIMIT              =0;
+  public static final int SPIN_UPPER_LIMIT                 =500;
+  public static final int SPIN_LOWER_LIMIT                 =-500;
+  public static final float EXTENDO_UPPER_LIMIT            =0;
+  public static final float EXTENDO_LOWER_LIMIT            =-10;
+  public static final double EXTENDO_KP                    =.01;
+  public static final float TILT_UPPER_LIMIT               =0;
+  public static final float TILT_LOWER_LIMIT               =-30;
   public static final double TILT_GEAR_RATIO               = 100;
   public static final double TILT_ENCODER_CPR              = 1;
   public static final double TILT_CPR                      = TILT_ENCODER_CPR * TILT_GEAR_RATIO;

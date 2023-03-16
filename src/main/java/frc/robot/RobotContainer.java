@@ -95,6 +95,7 @@ arm.setDefaultCommand(new ArmCommand(arm,
 
     m_armController.b().whileTrue(new grabCommand(arm));
     m_armController.start().whileTrue(new homeCommand(arm));
+    ArmSubSystem.homeEncoders();
   }
 
   /**
