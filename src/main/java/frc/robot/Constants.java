@@ -52,7 +52,7 @@ public static class ArmSubSystemConstants {
   public static final float EXTENDO_LOWER_LIMIT            =-10;
   public static final double EXTENDO_KP                    =.01;
   public static final float TILT_UPPER_LIMIT               =0;
-  public static final float TILT_LOWER_LIMIT               =-30;
+  public static final float TILT_LOWER_LIMIT               =-32;
   public static final double TILT_GEAR_RATIO               = 100;
   public static final double TILT_ENCODER_CPR              = 1;
   public static final double TILT_CPR                      = TILT_ENCODER_CPR * TILT_GEAR_RATIO;

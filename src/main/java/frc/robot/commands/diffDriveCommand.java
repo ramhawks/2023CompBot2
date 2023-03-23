@@ -36,7 +36,7 @@ public class diffDriveCommand extends CommandBase {
   @Override
   public void execute() {
     double power = rightPower.getAsDouble() - leftPower.getAsDouble();
-    DriveTrainSubSystem.setDiffDrive(power, turn.getAsDouble());
+    DriveTrainSubSystem.setDiffDrive(power, turn.getAsDouble() * .75);
   }
 
   // Called once the command ends or is interrupted.

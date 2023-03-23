@@ -7,14 +7,18 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.LimitsCommand;
 import frc.robot.commands.SlowDrive;
 import frc.robot.commands.brakeCommand;
+import frc.robot.commands.coneLightCommand;
+import frc.robot.commands.cubeLightCommand;
 import frc.robot.commands.diffDriveCommand;
 import frc.robot.commands.grabCommand;
 import frc.robot.commands.homeCommand;
 import frc.robot.subsystems.ArmSubSystem;
 import frc.robot.subsystems.DriveTrainSubSystem;
 import frc.robot.subsystems.TelemetrySubsystem;
+import frc.robot.subsystems.lightingSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -40,6 +44,8 @@ public class RobotContainer {
   //private final TelemetrySubsystem  telemetry  = new TelemetrySubsystem();
 
   private final ArmSubSystem arm = new ArmSubSystem();
+
+  private final lightingSubsystem lighting = new lightingSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -95,7 +101,9 @@ arm.setDefaultCommand(new ArmCommand(arm,
 
     m_armController.b().whileTrue(new grabCommand(arm));
     m_armController.start().whileTrue(new homeCommand(arm));
-    ArmSubSystem.homeEncoders();
+    m_armController.back().whileTrue(new LimitsCommand(arm));
+    m_armController.povDown().whileTrue(new cubeLightCommand(lighting));
+    m_armController.povUp().whileTrue(new coneLightCommand(lighting));
   }
 
   /**

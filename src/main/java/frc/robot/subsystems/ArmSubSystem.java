@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.StateSpaceUtil;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
@@ -47,6 +48,7 @@ private static Solenoid tester = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
 private static Solenoid tester2 = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
 
 private static boolean grabberIsOpen;
+public static boolean limitsEnabled;
   /** Creates a new ArmSubSystem. */
   public ArmSubSystem() {
       spin.restoreFactoryDefaults();
@@ -74,6 +76,8 @@ private static boolean grabberIsOpen;
       extendo.setSoftLimit(SoftLimitDirection.kReverse, ArmSubSystemConstants.EXTENDO_LOWER_LIMIT);
       extendo.enableSoftLimit(SoftLimitDirection.kForward, true);
       extendo.enableSoftLimit(SoftLimitDirection.kReverse, true);
+
+    limitsEnabled = true;
 
       spin.burnFlash();
       tilt.burnFlash();
@@ -178,10 +182,27 @@ public static void homeEncoders(){
   
 }
 
+public static void enableLimits(){
+  tilt.enableSoftLimit(SoftLimitDirection.kForward, true);
+  tilt.enableSoftLimit(SoftLimitDirection.kReverse, true);
+  extendo.enableSoftLimit(SoftLimitDirection.kForward, true);
+  extendo.enableSoftLimit(SoftLimitDirection.kReverse, true);
+  limitsEnabled = true;
+}
+
+public static void disableLimits(){
+  tilt.enableSoftLimit(SoftLimitDirection.kForward, false);
+  tilt.enableSoftLimit(SoftLimitDirection.kReverse, false);
+  extendo.enableSoftLimit(SoftLimitDirection.kForward, false);
+  extendo.enableSoftLimit(SoftLimitDirection.kReverse, false);
+  limitsEnabled = false;
+}
+
 
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("grabber", getGrabberOpen());
+    SmartDashboard.putBoolean("Limits", limitsEnabled);
     SmartDashboard.putNumber("tilt", tiltEncoder.getPosition());
     SmartDashboard.putNumber("spin", spinEncoder.getDistance());
     SmartDashboard.putNumber("Extend", extendoEncoder.getPosition());
