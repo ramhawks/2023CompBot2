@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmCommand;
-import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.LimitsCommand;
 import frc.robot.commands.SlowDrive;
 import frc.robot.commands.brakeCommand;
@@ -17,7 +16,6 @@ import frc.robot.commands.grabCommand;
 import frc.robot.commands.homeCommand;
 import frc.robot.subsystems.ArmSubSystem;
 import frc.robot.subsystems.DriveTrainSubSystem;
-import frc.robot.subsystems.TelemetrySubsystem;
 import frc.robot.subsystems.lightingSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
